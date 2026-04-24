@@ -1,41 +1,8 @@
-import { useState, useEffect } from "react";
-import { useSocket } from "../hooks/useSocket";
+import { useSocketContext } from "../context/SocketContext";
 import MoodChart from "./MoodChart";
 
-const INITIAL_COUNTS = { positive: 0, neutral: 0, negative: 0 };
-
 export default function AdminDashboard() {
-  const { socket, isConnected } = useSocket();
-  const [counts, setCounts] = useState(INITIAL_COUNTS);
-  const [timeline, setTimeline] = useState([]);
-  const [recentComments, setRecentComments] = useState([]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("new_comment", ({ sentiment, timestamp, author, text }) => {
-      setCounts((prev) => ({
-        ...prev,
-        [sentiment.label]: prev[sentiment.label] + 1,
-      }));
-
-      setTimeline((prev) => [
-        ...prev.slice(-29),
-        {
-          time: new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-          compound: sentiment.compound,
-        },
-      ]);
-
-      setRecentComments((prev) => [
-        { author, text, label: sentiment.label, timestamp },
-        ...prev.slice(0, 4),
-      ]);
-    });
-
-    return () => socket.off("new_comment");
-  }, [socket]);
-
+  const { counts, timeline, isConnected } = useSocketContext();
   const total = counts.positive + counts.neutral + counts.negative;
 
   const stats = [
@@ -61,7 +28,6 @@ export default function AdminDashboard() {
         </span>
       </div>
 
-      {/* Stat Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "28px" }}>
         {stats.map(({ key, label, emoji, color, bg }) => (
           <div key={key} style={{
@@ -93,42 +59,11 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Charts */}
       <MoodChart counts={counts} timeline={timeline} />
 
-      {/* Recent Comments */}
-      {recentComments.length > 0 && (
-        <div style={{ marginTop: "28px" }}>
-          <h2 style={{ fontSize: "1rem", fontWeight: 600, color: "#334155", marginBottom: "12px" }}>
-            Recent Activity
-          </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {recentComments.map((c, i) => {
-              const colors = { positive: "#16a34a", neutral: "#a16207", negative: "#b91c1c" };
-              return (
-                <div key={i} style={{
-                  background: "white",
-                  borderRadius: "8px",
-                  padding: "10px 14px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                  fontSize: "0.825rem",
-                }}>
-                  <div>
-                    <span style={{ fontWeight: 600, color: "#334155" }}>{c.author} </span>
-                    <span style={{ color: "#64748b" }}>{c.text.slice(0, 60)}{c.text.length > 60 ? "…" : ""}</span>
-                  </div>
-                  <span style={{ color: colors[c.label], fontWeight: 600, marginLeft: "12px", whiteSpace: "nowrap" }}>
-                    {c.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+      <p style={{ textAlign: "center", marginTop: "16px", fontSize: "0.8rem", color: "#94a3b8" }}>
+        Total comments received: <strong>{total}</strong>
+      </p>
     </div>
   );
 }

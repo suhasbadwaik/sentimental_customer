@@ -1,23 +1,9 @@
-import { useState, useEffect } from "react";
-import { useSocket } from "../hooks/useSocket";
+import { useSocketContext } from "../context/SocketContext";
 import CommentCard from "./CommentCard";
 import CommentForm from "./CommentForm";
 
 export default function CommentWall() {
-  const { socket, isConnected } = useSocket();
-  const [comments, setComments] = useState([]);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("new_comment", (comment) => {
-      setComments((prev) => [comment, ...prev]);
-    });
-
-    return () => {
-      socket.off("new_comment");
-    };
-  }, [socket]);
+  const { comments, isConnected } = useSocketContext();
 
   return (
     <div>

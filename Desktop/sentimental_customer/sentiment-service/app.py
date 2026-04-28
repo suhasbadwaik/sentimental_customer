@@ -9,6 +9,8 @@ CORS(app)
 
 @app.route("/analyze", methods=["POST"])
 def analyze():
+    #  print("/analyze endpoint hit")
+
     body = request.get_json(force=True, silent=True) or {}
     text = body.get("text", "").strip()
 
@@ -19,9 +21,6 @@ def analyze():
     return jsonify(result), 200
 
 
-@app.route("/health", methods=["GET"])
-def health():
-    return jsonify({"status": "ok"}), 200
 
 
 if __name__ == "__main__":

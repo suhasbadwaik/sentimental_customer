@@ -71,7 +71,7 @@ router.post("/comment", async (req, res) => {
 });
 
 // ── POST /api/admin/verify ────────────────────────────────────────
-// Frontend sends { password }, we check against .env, return ok/fail
+// Frontend sends password, we check against .env, return ok/fail
 router.post("/admin/verify", (req, res) => {
   const { password } = req.body;
 

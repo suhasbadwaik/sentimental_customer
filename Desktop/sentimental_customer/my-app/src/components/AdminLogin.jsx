@@ -19,7 +19,7 @@ export default function AdminLogin({ onUnlock }) {
       const data = await res.json();
 
       if (data.success) {
-        sessionStorage.setItem("admin_unlocked", "true"); // ← persists for tab session
+        localStorage.setItem("admin_unlocked", "true"); // ← persists for tab session
         onUnlock();
       } else {
         setError("❌ Wrong password. Try again.");

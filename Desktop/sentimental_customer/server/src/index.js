@@ -41,7 +41,6 @@ app.get("/.well-known/appspecific/com.chrome.devtools.json", (_, res) => {
 
 app.use("/api", commentRoutes);
 
-app.get("/health", (_, res) => res.json({ status: "ok" }));
 
 io.on("connection", (socket) => {
   console.log(`✅ Client connected:    ${socket.id}`);

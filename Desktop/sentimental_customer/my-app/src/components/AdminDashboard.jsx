@@ -19,6 +19,14 @@ export default function AdminDashboard() {
 
   async function deleteComment(id) {
     await fetch(`/api/comment/${id}`, { method: "DELETE" });
+    try {
+      const res = await fetch(`/api/comment/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        throw new Error("Failed to delete the comment on the server.");
+      }
+    } catch (err) {
+      console.error("Error deleting comment:", err);
+    }
   }
 
   return (

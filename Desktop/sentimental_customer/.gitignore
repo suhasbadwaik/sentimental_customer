@@ -1,0 +1,22 @@
+# Root dependencies
+node_modules/
+
+# Frontend
+my-app/node_modules/
+
+# Backend
+server/node_modules/
+
+# Python
+venv/
+__pycache__/
+
+# Secrets
+.env
+
+# Build folders
+dist/
+build/
+
+# Logs
+*.log

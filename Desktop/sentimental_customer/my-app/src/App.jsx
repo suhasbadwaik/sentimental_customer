@@ -9,7 +9,7 @@ import "./App.css";
 export default function App() {
   // Check sessionStorage so page refresh inside the tab keeps you in
   const [adminUnlocked, setAdminUnlocked] = useState(
-    () => sessionStorage.getItem("admin_unlocked") === "true"
+    () => localStorage.getItem("admin_unlocked") === "true"
   );
 
   function handleUnlock() { setAdminUnlocked(true); }

@@ -6,7 +6,7 @@ import {
   Legend,
   LineElement,
   PointElement,
-  LinearScale,
+  LinearScale,  
   CategoryScale,
   Filler,
 } from "chart.js";

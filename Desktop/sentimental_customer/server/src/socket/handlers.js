@@ -3,7 +3,7 @@ export function registerHandlers(io, socket) {
     console.log(`❌ Client disconnected: ${socket.id}`);
   });
 
-  socket.on("ping_server", (callback) => {
-    if (typeof callback === "function") callback({ status: "pong" });
-  });
+  // socket.on("ping_server", (callback) => {
+  //   if (typeof callback === "function") callback({ status: "pong" });
+  // });
 }

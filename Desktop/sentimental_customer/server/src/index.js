@@ -5,7 +5,7 @@ import cors from "cors";
 import "dotenv/config";
 import commentRoutes from "./routes/comments.js";
 import { registerHandlers } from "./socket/handlers.js";
-
+  
 const app = express();
 const httpServer = createServer(app);
 

@@ -32,11 +32,11 @@ except Exception as e:
         sarcasm_phrases = ["oh great", "just amazing", "fantastic", "wonderful job"]
         return any(phrase in text.lower() for phrase in sarcasm_phrases)
 
-# COLOR_MAP = {
-#     "positive": "#059669",
-#     "neutral":  "#d97706",
-#     "negative": "#dc2626",
-# }
+COLOR_MAP = {
+    "positive": "#059669",
+    "neutral":  "#d97706",
+    "negative": "#dc2626",
+}
 
 EMOTION_MAP = {
     "joy":      "Excited / Happy",
@@ -94,21 +94,34 @@ DISPLAY_EMOTION_MAP = {
 def get_display_emotion(emotion: str, label: str, score: float) -> dict:
     """
     Maps internal emotion + sentiment label to one of 5 display emotions.
-    Priority: special detections → score intensity → emotion type → sentiment label
+    Stricter thresholds so Excited is rare, Happy and Neutral get fair coverage.
     """
+    # Special detections always map to frustrated
     if emotion in ("Sarcastic", "Frustrated", "Warning"):
         return DISPLAY_EMOTION_MAP["frustrated"]
 
     if label == "positive":
-        if abs(score) >= 0.5 or emotion in ("Excited / Happy", "Surprised"):
+        # Excited: only for very high scores AND strong joy/surprise emotion
+        # Both conditions must be true — high score alone is not enough
+        if abs(score) >= 0.75 and emotion in ("Excited / Happy",):
             return DISPLAY_EMOTION_MAP["excited"]
+
+        # Surprised alone (e.g. "Wow I can't believe how good this is")
+        # needs even higher score to be excited
+        if abs(score) >= 0.85 and emotion == "Surprised":
+            return DISPLAY_EMOTION_MAP["excited"]
+
+        # Everything else positive → Happy
         return DISPLAY_EMOTION_MAP["happy"]
 
     if label == "negative":
+        # Anger and disgust → Frustrated
         if emotion in ("Angry", "Disgusted"):
             return DISPLAY_EMOTION_MAP["frustrated"]
+        # Sadness, anxiety, fear → Unhappy
         return DISPLAY_EMOTION_MAP["unhappy"]
 
+    # Neutral label → always neutral regardless of emotion
     return DISPLAY_EMOTION_MAP["neutral"]
 
 # ---------------------------
